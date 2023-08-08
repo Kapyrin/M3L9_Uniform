@@ -49,7 +49,6 @@ public class Main {
                 public void handle(HttpExchange exchange) throws IOException {
                     File picture = new File("C:/Users/Vladimir/IdeaProjects/M3L9_Uniform/src/main/resources/green.jpg");
 
-
                     byte[] bytes = Files.readAllBytes(picture.toPath());
                     exchange.sendResponseHeaders(200, bytes.length);
 
@@ -57,6 +56,19 @@ public class Main {
                     responseBody.write(bytes);
                     responseBody.close();
 
+                }
+            });
+            httpServer.createContext("/reverse", new HttpHandler() {
+                @Override
+                public void handle(HttpExchange exchange) throws IOException {
+                    String requestUri = exchange.getRequestURI().getPath();
+                    String inputText = requestUri.substring( requestUri.lastIndexOf("/") +1);
+                    String reverseText = new StringBuilder(inputText).reverse().toString();
+                    byte [] bytes = reverseText.getBytes();
+                    exchange.sendResponseHeaders(200, bytes.length);
+                    OutputStream responseBody = exchange.getResponseBody();
+                    responseBody.write(bytes);
+                    responseBody.close();
                 }
             });
 
