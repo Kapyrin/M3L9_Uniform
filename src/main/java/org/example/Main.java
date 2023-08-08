@@ -5,9 +5,11 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
 
 public class Main {
     public static void main(String[] args) {
@@ -42,14 +44,28 @@ public class Main {
 
                 }
             });
+            httpServer.createContext("/picture", new HttpHandler() {
+                @Override
+                public void handle(HttpExchange exchange) throws IOException {
+                    File picture = new File("C:/Users/Vladimir/IdeaProjects/M3L9_Uniform/src/main/resources/green.jpg");
+
+
+                    byte[] bytes = Files.readAllBytes(picture.toPath());
+                    exchange.sendResponseHeaders(200, bytes.length);
+
+                    OutputStream responseBody = exchange.getResponseBody();
+                    responseBody.write(bytes);
+                    responseBody.close();
+
+                }
+            });
 
             httpServer.start();
 
             // localhost:8080/
             // yandex.ru/
 
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
